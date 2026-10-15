@@ -403,11 +403,12 @@ to{opacity:1;transform:translateY(0)}
 .reaction-chip.selected{border-color:#e9a6c0;background:#fff0f6;color:#b72e65}
 .reaction-chip.selected span{color:#b72e65}
 .reaction-picker{position:absolute;z-index:2;top:-36px;right:4px;display:flex;gap:3px;padding:4px;border:1px solid #f0e8ec;border-radius:18px;background:#fff;box-shadow:0 5px 18px #39212b20;opacity:0;pointer-events:none;transform:translateY(3px);transition:opacity .15s,transform .15s}
+.message-bubble.incoming .reaction-picker{right:auto;left:4px}
 .message-bubble:hover .reaction-picker,.message-bubble:focus-within .reaction-picker{opacity:1;pointer-events:auto;transform:translateY(0)}
 .reaction-picker button{width:26px;height:26px;display:grid;place-items:center;padding:0;border:0;border-radius:50%;background:transparent;font-size:14px;cursor:pointer;transition:background .12s,transform .12s}
 .reaction-picker button:hover,.reaction-picker button:focus-visible{background:#fff0f6;transform:scale(1.13);outline:0}
 .reaction-picker button:disabled,.reaction-chip:disabled{opacity:.5;cursor:wait}
-@media(hover:none){.reaction-picker{position:static;width:max-content;margin:7px 0 0 auto;padding:2px;border:0;background:transparent;box-shadow:none;opacity:1;pointer-events:auto;transform:none}.reaction-picker button{width:28px;height:28px}}
+@media(hover:none){.reaction-picker{position:static;width:max-content;margin:7px 0 0 auto;padding:2px;border:0;background:transparent;box-shadow:none;opacity:1;pointer-events:auto;transform:none}.message-bubble.incoming .reaction-picker{margin-right:auto;margin-left:0}.reaction-picker button{width:28px;height:28px}}
 .chat-start{align-self:center;margin:auto}
 .message-compose{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line)}
 .message-compose input{height:40px;min-width:0;flex:1;padding:0 13px;border:1px solid #ddd;border-radius:20px;outline:0;font:12px 'DM Sans'}
