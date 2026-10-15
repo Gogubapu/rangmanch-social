@@ -14,6 +14,33 @@ function updateAccountAvatarImages(avatarUrl) {
   document.getElementById("profileAvatar").src = source;
   document.querySelectorAll('a[href="#profile"] img').forEach(image => { image.src = source; });
 }
+function applyAccountProfile(account, fallbackEmail = "") {
+  activeUsername = account.username;
+  const userRow = document.querySelector(".user-row");
+  updateAccountAvatarImages(account.avatar_url);
+  userRow.querySelector("b").textContent = account.username;
+  userRow.querySelector("small").textContent = account.display_name || fallbackEmail;
+  document.getElementById("profileUsername").textContent = account.username;
+  document.getElementById("profileDisplayName").textContent = account.display_name || fallbackEmail;
+  document.getElementById("profileBio").textContent = account.bio || "";
+  document.getElementById("profilePrivacyLabel").hidden = !account.is_private;
+}
+function readCachedAccountProfile(userId) {
+  try {
+    const account = JSON.parse(localStorage.getItem(`rangmanch:profile:${userId}`));
+    return account?.id === userId && typeof account.username === "string" ? account : null;
+  } catch (error) {
+    console.warn("Could not read the cached profile.", error);
+    return null;
+  }
+}
+function cacheAccountProfile(account) {
+  try {
+    localStorage.setItem(`rangmanch:profile:${account.id}`, JSON.stringify(account));
+  } catch (error) {
+    console.warn("Could not cache the profile for the next page load.", error);
+  }
+}
 function updateFollowButton(button, isFollowing) {
   button.textContent = isFollowing ? "Following" : "Follow";
   button.classList.toggle("is-following", isFollowing);
@@ -269,14 +296,8 @@ document.getElementById("profileEditForm").addEventListener("submit", async even
     const { data, error } = await supa.from("profiles").update(updates).eq("id", activeUserId).select("id,username,display_name,avatar_url,bio,is_private").single();
     if (error) throw error;
     viewedProfile = data;
-    activeUsername = data.username;
-    document.getElementById("profileUsername").textContent = data.username;
-    document.getElementById("profileDisplayName").textContent = data.display_name || "";
-    document.getElementById("profileBio").textContent = data.bio || "";
-    document.getElementById("profilePrivacyLabel").hidden = !data.is_private;
-    updateAccountAvatarImages(data.avatar_url);
-    document.querySelector(".user-row b").textContent = data.username;
-    document.querySelector(".user-row small").textContent = data.display_name || "";
+    applyAccountProfile(data);
+    cacheAccountProfile(data);
     closeProfileEditor();
     await loadSocial();
     toast("Profile updated");
@@ -1057,19 +1078,16 @@ document.addEventListener("keydown", event => { if (event.key === "Escape") { do
 document.getElementById("logoutButton").onclick = async () => { await supa.auth.signOut(); location.replace("/login"); };
 async function initialize() {
   const { data: { session } } = await supa.auth.getSession(); if (!session) return location.replace("/login");
-  const user = session.user; activeUserId = user.id; const { data: profile } = await supa.from("profiles").select("id").eq("id", user.id).maybeSingle();
+  const user = session.user; activeUserId = user.id;
+  const cachedAccount = readCachedAccountProfile(user.id);
+  if (cachedAccount) applyAccountProfile(cachedAccount, user.email || "");
+  const { data: profile } = await supa.from("profiles").select("id").eq("id", user.id).maybeSingle();
   if (!profile) { const metadata = user.user_metadata || {}; const username = metadata.username || user.email.split("@")[0].replace(/[^a-z0-9_]/gi, "").slice(0, 30) || "member"; await supa.from("profiles").upsert({ id: user.id, username, display_name: metadata.display_name || "" }); }
   const { data: account } = await supa.from("profiles").select("username,display_name,avatar_url,bio,is_private").eq("id", user.id).maybeSingle();
   if (account) {
-    activeUsername = account.username;
-    const userRow = document.querySelector(".user-row");
-    updateAccountAvatarImages(account.avatar_url);
-    userRow.querySelector("b").textContent = account.username;
-    userRow.querySelector("small").textContent = account.display_name || user.email;
-    document.getElementById("profileUsername").textContent = account.username;
-    document.getElementById("profileDisplayName").textContent = account.display_name || user.email;
-    document.getElementById("profileBio").textContent = account.bio || "";
-    document.getElementById("profilePrivacyLabel").hidden = !account.is_private;
+    const freshAccount = { ...account, id: user.id };
+    applyAccountProfile(account, user.email || "");
+    cacheAccountProfile(freshAccount);
   }
   await loadFollowing(); await loadSuggestions(); await loadSocial(); await loadStories(); await loadProfileStats(); await loadMessages(); await loadNotifications();
   clearInterval(notificationRefreshTimer);
