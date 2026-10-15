@@ -18,6 +18,8 @@ function readJson(req, maxBytes = 300000) {
   });
 }
 
+const host = process.env.HOST || (process.env.NODE_ENV === 'production' ? '0.0.0.0' : '127.0.0.1');
+
 http.createServer((req, res) => {
   const routePath = new URL(req.url, 'http://localhost').pathname;
   if (routePath === '/login' || routePath === '/signup') {
@@ -46,6 +48,6 @@ http.createServer((req, res) => {
     res.writeHead(200, { 'Content-Type': mime[path.extname(target)] || 'application/octet-stream', 'X-Content-Type-Options': 'nosniff' });
     res.end(data);
   });
-}).listen(Number(process.env.PORT) || 3000, '127.0.0.1', () => {
+}).listen(Number(process.env.PORT) || 3000, host, () => {
   console.log(`RangManch ready at http://localhost:${Number(process.env.PORT) || 3000}`);
 });
