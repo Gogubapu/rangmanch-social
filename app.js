@@ -5,8 +5,22 @@ let posts = [], liked = {}, viewMode = "home", selectedUser = "", activeUserId =
 let followedUserIds = new Set();
 let pendingFollowRequestIds = new Set();
 let relationshipMode = "following";
+let emojiPickerModulePromise;
+let reelObserver;
 const esc = value => String(value ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 function toast(message) { const el = document.getElementById("toast"); el.textContent = message; el.classList.add("show"); setTimeout(() => el.classList.remove("show"), 2200); }
+async function loadCommentEmojiPicker() {
+  if (!emojiPickerModulePromise) {
+    emojiPickerModulePromise = import("https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js").catch(error => {
+      emojiPickerModulePromise = null;
+      console.warn("Could not load the comment emoji picker.", error);
+      toast("Emoji picker could not load. Please try again.");
+      return false;
+    });
+  }
+  await emojiPickerModulePromise;
+  return customElements.get("emoji-picker") !== undefined;
+}
 function updateAccountAvatarImages(avatarUrl) {
   const source = avatarUrl || "https://i.pravatar.cc/120?img=47";
   document.querySelector(".user-row img").src = source;
@@ -543,6 +557,8 @@ function visiblePosts() {
   return result;
 }
 function renderFeed() {
+  reelObserver?.disconnect();
+  reelObserver = null;
   const entries = visiblePosts();
     feed.className = viewMode === "reels" ? "feed-reels" : viewMode === "explore" ? "feed-explore" : viewMode === "profile" ? "profile-post-grid" : "feed-default";
   feed.closest(".feed-column").classList.toggle("reels-mode", viewMode === "reels");
@@ -555,13 +571,32 @@ function renderFeed() {
     feed.innerHTML = `<div class="empty-view"><b>${viewMode === "reels" ? "No reels yet" : viewMode === "profile" ? "No posts" : "No posts yet"}</b><span>${emptyMessage}</span>${viewMode === "reels" || (viewMode === "profile" && viewedProfile?.id === activeUserId) ? '<button class="empty-create">Create a post</button>' : ""}</div>`;
     return;
   }
-  feed.innerHTML = entries.map(({ post: p, index: i }) => {
-    const media = isVideo(p) ? `<video class="post-image" src="${esc(p.image)}" ${viewMode === "reels" ? "autoplay muted loop" : "controls"} playsinline preload="metadata"></video>` : `<img class="post-image" src="${esc(p.image)}" alt="${esc(p.caption)}">`;
+  feed.innerHTML = entries.map(({ post: p, index: i }, entryIndex) => {
+    const media = isVideo(p) ? `<video class="post-image" src="${esc(p.image)}" ${viewMode === "reels" ? "muted loop" : "controls"} playsinline preload="${entryIndex === 0 ? "metadata" : "none"}"></video>` : `<img class="post-image" src="${esc(p.image)}" alt="${esc(p.caption)}" loading="${entryIndex === 0 ? "eager" : "lazy"}" fetchpriority="${entryIndex === 0 ? "high" : "auto"}" decoding="async">`;
     if (viewMode === "reels") return `<article class="reel-card post" data-index="${i}">${media}<div class="reel-shade"><div class="reel-copy"><b>@${esc(p.user)}</b><p>${esc(p.caption)}</p><small>♫ Original audio</small></div><div class="reel-actions"><button class="like ${liked[p.id] ? "liked" : ""}">${liked[p.id] ? "♥" : "♡"}<small>${Number(p.likes || 0).toLocaleString()}</small></button><button class="share">↗<small>Share</small></button></div></div></article>`;
-    if (viewMode === "explore" || viewMode === "profile") return `<button class="explore-tile post" data-index="${i}">${isVideo(p) ? `<video class="post-image" src="${esc(p.image)}" muted loop playsinline preload="metadata"></video>` : media}<span>♡ ${Number(p.likes || 0).toLocaleString()}</span></button>`;
+    if (viewMode === "explore" || viewMode === "profile") return `<button class="explore-tile post" data-index="${i}">${isVideo(p) ? `<video class="post-image" src="${esc(p.image)}" muted loop playsinline preload="${entryIndex === 0 ? "metadata" : "none"}"></video>` : media}<span>♡ ${Number(p.likes || 0).toLocaleString()}</span></button>`;
     const ownerMenu = p.authorId === activeUserId ? `<button class="dots" type="button" aria-label="Post options" aria-expanded="false">•••</button><div class="post-menu" hidden><button type="button" class="post-edit">Edit post</button><button type="button" class="post-delete">Delete post</button></div>` : "";
     return `<article class="post" data-index="${i}"><header class="post-header"><img src="${esc(p.avatar)}" alt=""><div><b>${esc(p.user)}</b><small>${esc(p.name)} · ${esc(p.time)}</small></div>${ownerMenu}</header>${media}<div class="post-actions"><button class="like ${liked[p.id] ? "liked" : ""}">${liked[p.id] ? "♥" : "♡"}</button><button>◯</button><button class="share">⌁</button><button class="save">♧</button></div><div class="post-likes"><span>${Number(p.likes || 0).toLocaleString()}</span> likes</div><p class="caption"><b>${esc(p.user)}</b>${esc(p.caption)}</p><button class="comments-link">View all ${p.comments || 0} comments</button><div class="post-comments" hidden></div><div class="comment-box"><input placeholder="Add a comment…"><button>Post</button></div></article>`;
   }).join("");
+  if (viewMode === "reels") {
+    const videos = feed.querySelectorAll(".reel-card video");
+    if ("IntersectionObserver" in window) {
+      reelObserver = new IntersectionObserver(entries => {
+        entries.forEach(({ target, isIntersecting, intersectionRatio }) => {
+          if (isIntersecting && intersectionRatio >= 0.6) {
+            const playRequest = target.play();
+            if (playRequest) playRequest.catch(error => {
+              if (error.name !== "AbortError") console.warn("Could not play the visible reel.", error);
+            });
+          } else target.pause();
+        });
+      }, { root: feed, threshold: [0, 0.6] });
+      videos.forEach(video => reelObserver.observe(video));
+    } else if (videos[0]) {
+      const playRequest = videos[0].play();
+      if (playRequest) playRequest.catch(error => console.warn("Could not play the first reel.", error));
+    }
+  }
   feed.querySelectorAll(".comment-box").forEach(box => {
     const input = box.querySelector("input");
     const submit = box.querySelector("button");
@@ -655,11 +690,15 @@ feed.addEventListener("click", async event => {
   if (event.target.closest(".comment-emoji-toggle")) {
     const toggle = event.target.closest(".comment-emoji-toggle");
     const popover = card.querySelector(".comment-emoji-popover");
-    const willOpen = popover.hidden;
+    if (!popover.hidden) { popover.hidden = true; toggle.setAttribute("aria-expanded", "false"); return; }
+    toggle.disabled = true;
+    const pickerLoaded = await loadCommentEmojiPicker();
+    toggle.disabled = false;
+    if (!pickerLoaded || !toggle.isConnected) return;
     feed.querySelectorAll(".comment-emoji-popover").forEach(panel => { panel.hidden = true; });
     feed.querySelectorAll(".comment-emoji-toggle").forEach(button => button.setAttribute("aria-expanded", "false"));
-    popover.hidden = !willOpen;
-    toggle.setAttribute("aria-expanded", String(willOpen));
+    popover.hidden = false;
+    toggle.setAttribute("aria-expanded", "true");
     return;
   }
   if (event.target.closest(".dots")) {
