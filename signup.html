@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Join RangManch</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="auth-page">
+<main class="auth-layout">
+<section class="auth-visual">
+<a class="logo" href="/">Rang<span>Manch</span>
+</a>
+<div>
+<p class="auth-eyebrow">A little closer to home</p>
+<h1>Your India.<br>Your people.<br>
+<span>Your story.</span>
+</h1>
+<p>Discover places, people and everyday moments from every corner of India.</p>
+</div>
+<small>Made for the stories that bring us together.</small>
+</section>
+<section class="auth-form-side">
+<div class="auth-card">
+<p class="auth-kicker">START YOUR JOURNEY</p>
+<h2>Create your account</h2>
+<p class="auth-sub">Join a community sharing life across India.</p>
+<form id="authForm" data-mode="signup">
+<label>Full name<input id="authName" autocomplete="name" required placeholder="Your name">
+</label>
+<label>Username<input id="authUsername" autocomplete="username" required minlength="3" maxlength="30" placeholder="e.g. rangmanch_user">
+</label>
+<label>Email address<input id="authEmail" type="email" autocomplete="email" required placeholder="you@example.com">
+</label>
+<label>Password<input id="authPassword" type="password" autocomplete="new-password" minlength="6" required placeholder="At least 6 characters">
+</label>
+<button class="auth-submit">Create account</button>
+<p id="authError" role="status">
+</p>
+</form>
+<p class="auth-switch">Already part of RangManch? <a href="/login">Log in</a>
+</p>
+<p class="auth-terms">By joining, you agree to our <a href="/terms.html">Terms</a> and <a href="/privacy.html">Privacy Policy</a>. Read our <a href="/community-guidelines.html">Community Guidelines</a>.</p>
+</div>
+</section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+</script>
+<script src="supabase-config.js">
+</script>
+<script src="auth.js">
+</script>
+</body>
+</html>

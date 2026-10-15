@@ -1,0 +1,10 @@
+{
+  "name": "rangmanch-social",
+  "version": "1.0.0",
+  "private": true,
+  "description": "RangManch social app for sharing Indian culture and stories",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node -e \"eval(require('node:fs').readFileSync('server.js', 'utf8'))\""
+  }
+}

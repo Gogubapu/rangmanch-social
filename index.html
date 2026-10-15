@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RangManch — India's stories, together</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="site-shell">
+<aside class="sidebar">
+<a class="logo" href="#">Rang<span>Manch</span>
+</a>
+<nav class="nav">
+<a class="nav-item active" href="#">
+<span class="nav-icon">⌂</span>
+<span>Home</span>
+</a>
+<button class="nav-item" id="searchNav">
+<span class="nav-icon">⌕</span>
+<span>Search</span>
+</button>
+<a class="nav-item" href="#explore">
+<span class="nav-icon">◈</span>
+<span>Explore</span>
+</a>
+<a class="nav-item" href="#reels">
+<span class="nav-icon">▷</span>
+<span>Reels</span>
+</a>
+<button class="nav-item" id="messagesNav" type="button">
+<span class="nav-icon">♢</span>
+<span>Messages</span>
+<b class="badge" id="messageBadge" hidden>0</b>
+</button>
+<button class="nav-item" id="notificationsNav" type="button">
+<span class="nav-icon">♡</span>
+<span>Notifications</span>
+<b class="badge" id="notificationBadge" hidden>0</b>
+</button>
+<button class="nav-item" id="createNav">
+<span class="nav-icon plus">＋</span>
+<span>Create</span>
+</button>
+<a class="nav-item profile-link" href="#profile">
+<img src="https://i.pravatar.cc/80?img=47">
+<span>Profile</span>
+</a>
+</nav>
+<button class="nav-item more">
+<span class="nav-icon">☰</span>
+<span>More</span>
+</button>
+</aside>
+<main class="main">
+<header class="mobile-header">
+<a class="logo" href="#">Rang<span>Manch</span>
+</a>
+<div>
+<button class="head-icon" id="mobileSearch">⌕</button>
+<button class="head-icon">♧</button>
+</div>
+</header>
+<div class="feed-layout">
+<section class="feed-column">
+<div class="creator-kpis" id="creatorKpis" hidden>
+<div class="kpi-title">
+<b>Your insights</b>
+<button id="refreshInsights">Refresh</button>
+</div>
+<div class="kpi-grid">
+<div>
+<strong id="kpiFollowers">0</strong>
+<small>Followers</small>
+<em>Community</em>
+</div>
+<div>
+<strong id="kpiReach">0</strong>
+<small>Post reach</small>
+<em>Views</em>
+</div>
+<div>
+<strong id="kpiEngagement">0</strong>
+<small>Engagement</small>
+<em>Interactions</em>
+</div>
+<div>
+<strong id="kpiPosts">0</strong>
+<small>Your posts</small>
+<em>Published</em>
+</div>
+</div>
+</div>
+<section class="profile-header" id="profileHeader" hidden>
+<div class="profile-avatar"><img id="profileAvatar" src="https://i.pravatar.cc/120?img=47" alt=""></div>
+<div class="profile-details">
+<div class="profile-title"><h1 id="profileUsername">Your profile</h1><span id="profileDisplayName"></span><span class="profile-privacy-label" id="profilePrivacyLabel" hidden>Private</span><button class="profile-edit-button" id="editProfileButton" type="button" hidden>Edit profile</button><button class="follow-toggle" id="profileFollowButton" type="button" hidden>Follow</button></div>
+<div class="profile-stats"><div><strong id="profilePostCount">0</strong><span>posts</span></div><button class="profile-stat-button" id="showFollowers" type="button"><strong id="profileFollowerCount">0</strong><span>followers</span></button><button class="profile-stat-button" id="showFollowing" type="button"><strong id="profileFollowingCount">0</strong><span>following</span></button></div>
+<p id="profileBio"></p>
+</div>
+</section>
+<div class="stories">
+<button class="story add-story" id="storyAdd">
+<span class="story-ring">
+<img src="https://i.pravatar.cc/80?img=47">
+<i>＋</i>
+</span>
+<small>Your story</small>
+</button>
+</div>
+<div id="searchResults" class="search-results" hidden>
+</div>
+<div id="feed">
+</div>
+<div class="end-note">
+<span>✦</span>
+<p>You're all caught up<br>
+<small>You've seen all new posts from the last 3 days.</small>
+</p>
+</div>
+</section>
+<aside class="right-rail">
+<div class="user-row">
+<img src="https://i.pravatar.cc/100?img=47">
+<div>
+<b></b>
+<small></small>
+</div>
+<button id="logoutButton">Log out</button>
+</div>
+<div class="suggest-head">
+<b>Suggested for you</b>
+<button id="searchAll" type="button">See All</button>
+</div>
+<div class="suggestions" id="suggestions"></div>
+<footer>
+<a href="/about.html">About</a>
+<a href="mailto:support@rangmanch.in">Help</a>
+<a href="mailto:press@rangmanch.in">Press</a>
+<a href="/privacy.html">Privacy</a>
+<a href="/terms.html">Terms</a>
+<a href="/community-guidelines.html">Community guidelines</a>
+<p>© 2026 RANGMANCH</p>
+</footer>
+</aside>
+</div>
+</main>
+</div>
+<nav class="bottom-nav">
+<a href="#">⌂</a>
+<a href="#explore">◈</a>
+<a href="#reels">▷</a>
+<button id="mobileMessages" type="button" aria-label="Messages">♢</button>
+<button id="mobileNotifications" type="button" aria-label="Notifications">♡<i class="mobile-notification-dot" id="mobileNotificationDot" hidden></i></button>
+<a href="#profile">
+<img src="https://i.pravatar.cc/80?img=47">
+</a>
+</nav>
+<div class="modal-backdrop" id="createModal">
+<div class="modal" role="dialog" aria-modal="true" aria-labelledby="composerTitle">
+<button class="modal-close" type="button" aria-label="Close composer">×</button>
+<h2 id="composerTitle">Create new post</h2>
+<div class="upload-box">
+<div class="upload-dropzone" id="postDropzone" role="button" tabindex="0" aria-label="Choose a photo or video">
+<div class="upload-prompt"><span>▧</span><b>Share a moment</b><small>Drag a photo or video here</small><label class="file-picker">Choose from device<input id="postFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/quicktime"></label></div>
+<div class="upload-preview" id="postPreview" hidden></div>
+</div>
+<div class="composer-caption"><textarea id="postCaption" maxlength="2200" placeholder="Write a caption…" aria-label="Post caption"></textarea><small><span id="captionCount">0</span>/2,200</small></div>
+<small class="upload-status" id="uploadStatus" role="status"></small>
+<button class="choose-btn" id="publishPost" type="button" disabled>Share post</button>
+</div>
+</div>
+</div>
+<div class="toast" id="toast">Post saved</div>
+<div class="story-composer-backdrop" id="storyComposerModal" hidden>
+<section class="story-composer" role="dialog" aria-modal="true" aria-labelledby="storyComposerTitle">
+<header><h2 id="storyComposerTitle">Create a story</h2><button type="button" id="closeStoryComposer" aria-label="Close story composer">×</button></header>
+<form id="storyComposerForm">
+<label class="story-file-choice">Choose a photo or video<input id="storyMediaInput" type="file" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/quicktime" required></label>
+<div class="story-upload-preview" id="storyUploadPreview" hidden></div>
+<label class="story-file-choice soundtrack-choice">Add music (optional)<input id="storyAudioInput" type="file" accept="audio/mpeg,audio/mp4,audio/aac,audio/wav,audio/x-wav,audio/ogg,audio/webm"></label>
+<div class="story-audio-preview" id="storyAudioPreview" hidden></div>
+<p class="story-upload-status" id="storyUploadStatus" role="status">Stories disappear after 24 hours.</p>
+<button class="choose-btn" id="publishStory" type="submit" disabled>Share story</button>
+</form>
+</section>
+</div>
+<div class="profile-edit-backdrop" id="profileEditModal" hidden>
+<section class="profile-edit-dialog" role="dialog" aria-modal="true" aria-labelledby="profileEditTitle">
+<header><h2 id="profileEditTitle">Edit profile</h2><button type="button" id="closeProfileEdit" aria-label="Close">×</button></header>
+<form id="profileEditForm">
+<label class="avatar-edit-label">Profile photo<input id="profilePhotoInput" type="file" accept="image/jpeg,image/png,image/webp"></label>
+<div class="avatar-edit-preview"><img id="profilePhotoPreview" src="https://i.pravatar.cc/120?img=47" alt="Profile photo preview"><small>JPG, PNG, or WebP, up to 5 MB</small></div>
+<label>Display name<input id="editDisplayName" type="text" maxlength="80" autocomplete="name"></label>
+<label>Username<input id="editUsername" type="text" minlength="3" maxlength="30" autocomplete="username" required pattern="[A-Za-z0-9_]{3,30}"><small>3–30 letters, numbers, or underscores</small></label>
+<label>Bio<textarea id="editBio" maxlength="160" rows="3" placeholder="A little about you"></textarea><small><span id="editBioCount">0</span>/160</small></label>
+<label class="private-account-toggle"><input id="editPrivateAccount" type="checkbox"><span><b>Private account</b><small>Only approved followers can browse your posts and stories in RangManch.</small></span></label>
+<section class="mfa-settings" aria-labelledby="mfaSettingsTitle">
+<div class="mfa-settings-heading"><span><b id="mfaSettingsTitle">Two-factor authentication</b><small id="mfaSettingsSummary">Add an authenticator app for an extra sign-in step.</small></span><button type="button" id="enableMfaButton">Set up</button><button type="button" id="disableMfaButton" hidden>Turn off</button></div>
+<p class="mfa-status" id="mfaStatus" role="status"></p>
+<div class="mfa-enrollment" id="mfaEnrollment" hidden>
+<p>Scan this QR code in your authenticator app, or enter the setup key manually.</p>
+<img id="mfaQrCode" alt="Authenticator setup QR code">
+<code id="mfaSecret"></code>
+<label>Authenticator code<input id="mfaSetupCode" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6,8}" minlength="6" maxlength="8" placeholder="6-digit code"></label>
+<div class="mfa-actions"><button type="button" id="cancelMfaSetup">Cancel</button><button type="button" id="verifyMfaSetup">Verify and enable</button></div>
+</div>
+</section>
+<p class="profile-edit-status" id="profileEditStatus" role="status"></p>
+<div class="profile-edit-actions"><button type="button" id="cancelProfileEdit">Cancel</button><button type="submit" id="saveProfileButton">Save changes</button></div>
+</form>
+</section>
+</div>
+<div class="notifications-backdrop" id="notificationsModal" hidden>
+<section class="notifications-dialog" role="dialog" aria-modal="true" aria-labelledby="notificationsTitle">
+<header><h2 id="notificationsTitle">Notifications</h2><button type="button" id="closeNotifications" aria-label="Close notifications">×</button></header>
+<div class="notifications-list" id="notificationsList"></div>
+</section>
+</div>
+<div class="relationship-backdrop" id="relationshipModal" hidden>
+<section class="relationship-dialog" role="dialog" aria-modal="true" aria-labelledby="relationshipTitle">
+<header><h2 id="relationshipTitle">Following</h2><button class="relationship-close" id="closeRelationships" aria-label="Close">×</button></header>
+<div class="relationship-list" id="relationshipList"></div>
+</section>
+</div>
+<div class="messages-backdrop" id="messagesModal" hidden>
+<section class="messages-window" role="dialog" aria-modal="true" aria-labelledby="messagesTitle">
+<header class="messages-header"><h2 id="messagesTitle">Messages</h2><button id="messagesClose" aria-label="Close messages">×</button></header>
+<div class="messages-body">
+<aside class="messages-sidebar"><div class="messages-self"><b>Inbox</b><button id="newMessageButton" type="button">New message</button></div><label class="messages-search"><span>⌕</span><input id="messageSearch" type="search" placeholder="Search conversations or people" autocomplete="off"></label><div class="conversation-list" id="conversationList"></div></aside>
+<section class="chat-panel" id="chatPanel"><div class="chat-empty"><b>Your messages</b><span>Choose a conversation or start a new one.</span></div></section>
+</div>
+</section>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+</script>
+<script src="supabase-config.js">
+</script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
+<script src="app.js">
+</script>
+</body>
+</html>
+
+
+
+
+
+

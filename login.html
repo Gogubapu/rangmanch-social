@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Log in to RangManch</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="auth-page">
+<main class="auth-layout">
+<section class="auth-visual">
+<a class="logo" href="/">Rang<span>Manch</span>
+</a>
+<div>
+<p class="auth-eyebrow">A little closer to home</p>
+<h1>Your India.<br>Your people.<br>
+<span>Your story.</span>
+</h1>
+<p>Discover places, people and everyday moments from every corner of India.</p>
+</div>
+<small>Made for the stories that bring us together.</small>
+</section>
+<section class="auth-form-side">
+<div class="auth-card">
+<p class="auth-kicker">GOOD TO SEE YOU AGAIN</p>
+<h2>Welcome back</h2>
+<p class="auth-sub">Log in to see what your community is sharing.</p>
+<form id="authForm" data-mode="login">
+<label>Email address<input id="authEmail" type="email" autocomplete="email" required placeholder="you@example.com">
+</label>
+<label>Password<input id="authPassword" type="password" autocomplete="current-password" required placeholder="Your password">
+</label>
+<p class="auth-forgot"><button id="forgotPasswordButton" type="button">Forgot password?</button></p>
+<button class="auth-submit">Log in</button>
+<p id="authError" role="status">
+</p>
+</form>
+<form id="mfaChallengeForm" class="mfa-challenge-form" hidden>
+<label>Authenticator code<input id="mfaLoginCode" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6,8}" minlength="6" maxlength="8" placeholder="6-digit code" required></label>
+<button class="auth-submit" type="submit">Verify code</button>
+<button class="mfa-cancel" id="cancelMfaLogin" type="button">Back to login</button>
+</form>
+<form id="forgotPasswordForm" class="forgot-password-form" hidden>
+<h2>Reset your password</h2>
+<p class="auth-sub">We’ll email you a secure reset link.</p>
+<label>Email address<input id="resetEmail" type="email" autocomplete="email" required placeholder="you@example.com"></label>
+<button class="auth-submit" type="submit">Send reset link</button>
+<button class="mfa-cancel" id="cancelPasswordReset" type="button">Back to login</button>
+</form>
+<p class="auth-switch">New to RangManch? <a href="/signup">Create an account</a>
+</p>
+</div>
+</section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+</script>
+<script src="supabase-config.js">
+</script>
+<script src="auth.js">
+</script>
+</body>
+</html>
