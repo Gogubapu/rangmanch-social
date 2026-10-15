@@ -478,6 +478,20 @@ async function toggleFollow(button) {
         : supa.from("user_follows").insert({ follower_id: activeUserId, following_id: targetId });
   const { error } = await request;
   button.disabled = false;
+  if (error?.code === "23505" && !isFollowing && !isRequested && button.dataset.private === "true") {
+    const { data: pendingRequest, error: lookupError } = await supa.from("follow_requests")
+      .select("id")
+      .eq("requester_id", activeUserId)
+      .eq("target_id", targetId)
+      .eq("status", "pending")
+      .maybeSingle();
+    if (lookupError) return toast(lookupError.message);
+    if (pendingRequest) {
+      pendingFollowRequestIds.add(targetId);
+      updateFollowAction(button, targetId, true);
+      return;
+    }
+  }
   if (error) return toast(error.message);
   if (isFollowing) followedUserIds.delete(targetId);
   else if (isRequested) pendingFollowRequestIds.delete(targetId);
