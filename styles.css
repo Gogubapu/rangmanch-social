@@ -601,3 +601,17 @@ body{overflow-x:hidden}
 .messages-self{padding-right:12px;padding-left:12px}
 .messages-self button{padding:8px}
 }
+@media(max-width:760px){
+.message-bubble .reaction-picker{display:none}
+}
+@media(max-width:640px){
+.messages-window{height:100dvh}
+.messages-body{display:flex;flex:1;min-height:0;flex-direction:column}
+.messages-sidebar{width:100%;height:auto;flex:1;min-height:0}
+.chat-panel{width:100%;height:auto;min-height:0;flex:1;display:none}
+.messages-backdrop.conversation-open .messages-sidebar{display:none}
+.messages-backdrop.conversation-open .chat-panel{display:flex}
+.chat-header{flex:0 0 56px}
+.chat-messages{min-height:0;flex:1;overscroll-behavior:contain}
+.message-compose{flex:0 0 auto;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px))}
+}

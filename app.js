@@ -339,7 +339,11 @@ function setMessageBadge(count) {
 function conversationUserId(message) { return message.sender_id === activeUserId ? message.recipient_id : message.sender_id; }
 async function loadMessages() {
   const { data, error } = await supa.from("direct_messages").select("id,sender_id,recipient_id,body,created_at,read_at").or(`sender_id.eq.${activeUserId},recipient_id.eq.${activeUserId}`).order("created_at", { ascending: false }).limit(500);
-  if (error) { console.warn(error.message); return; }
+  if (error) {
+    console.warn(error.message);
+    if (!messagesModal.hidden) conversationList.innerHTML = `<p class="message-empty">${esc(error.message)}</p>`;
+    return;
+  }
   const latestByPerson = new Map();
   let unread = 0;
   (data || []).forEach(message => {
@@ -366,6 +370,8 @@ function renderConversations(filter = "") {
 async function renderConversation(personId, markRead = true) {
   activeConversation = personId;
   renderConversations(document.getElementById("messageSearch").value.trim());
+  messagesModal.classList.add("conversation-open");
+  chatPanel.innerHTML = '<div class="chat-empty"><span>Loading conversation…</span></div>';
   const conversation = conversations.find(item => item.personId === personId);
   let person = conversation?.profile;
   if (!person) {
@@ -384,7 +390,6 @@ async function renderConversation(personId, markRead = true) {
     ? await supa.from("message_reactions").select("message_id,user_id,emoji").in("message_id", messageIds)
     : { data: [], error: null };
   if (reactionsError) console.warn(reactionsError.message);
-  messagesModal.classList.add("conversation-open");
   chatPanel.innerHTML = `<header class="chat-header"><button class="chat-back" type="button" aria-label="Back to inbox">‹</button><img src="${esc(person.avatar_url || "https://i.pravatar.cc/80?img=47")}" alt=""><span><b>${esc(person.username)}</b><small>${esc(person.display_name || "RangManch member")}</small></span></header><div class="chat-messages" id="chatMessages">${messages?.length ? renderMessageBubbles(messages, reactions) : '<p class="message-empty chat-start">Say hello and start the conversation.</p>'}</div><form class="message-compose" id="messageCompose"><input id="messageInput" maxlength="2000" autocomplete="off" placeholder="Write a message…" required><button type="submit" aria-label="Send message">Send</button></form>`;
   const messageScroll = document.getElementById("chatMessages");
   messageScroll.scrollTop = messageScroll.scrollHeight;
@@ -452,6 +457,7 @@ async function searchMessagePeople(query) {
 function openMessages() {
   if (!activeUserId) return location.assign("/login");
   messagesModal.hidden = false;
+  conversationList.innerHTML = '<p class="message-empty">Loading messages…</p>';
   loadMessages();
   document.getElementById("messageSearch").focus();
   clearInterval(messageRefreshTimer);
