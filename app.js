@@ -7,6 +7,13 @@ let pendingFollowRequestIds = new Set();
 let relationshipMode = "following";
 const esc = value => String(value ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 function toast(message) { const el = document.getElementById("toast"); el.textContent = message; el.classList.add("show"); setTimeout(() => el.classList.remove("show"), 2200); }
+function updateAccountAvatarImages(avatarUrl) {
+  const source = avatarUrl || "https://i.pravatar.cc/120?img=47";
+  document.querySelector(".user-row img").src = source;
+  document.querySelector("#storyAdd img").src = source;
+  document.getElementById("profileAvatar").src = source;
+  document.querySelectorAll('a[href="#profile"] img').forEach(image => { image.src = source; });
+}
 function updateFollowButton(button, isFollowing) {
   button.textContent = isFollowing ? "Following" : "Follow";
   button.classList.toggle("is-following", isFollowing);
@@ -267,12 +274,9 @@ document.getElementById("profileEditForm").addEventListener("submit", async even
     document.getElementById("profileDisplayName").textContent = data.display_name || "";
     document.getElementById("profileBio").textContent = data.bio || "";
     document.getElementById("profilePrivacyLabel").hidden = !data.is_private;
-    document.getElementById("profileAvatar").src = data.avatar_url || "https://i.pravatar.cc/120?img=47";
-    document.querySelector(".user-row img").src = data.avatar_url || "https://i.pravatar.cc/100?img=47";
+    updateAccountAvatarImages(data.avatar_url);
     document.querySelector(".user-row b").textContent = data.username;
     document.querySelector(".user-row small").textContent = data.display_name || "";
-    document.querySelectorAll('a[href="#profile"] img').forEach(image => { image.src = data.avatar_url || "https://i.pravatar.cc/80?img=47"; });
-    document.querySelector("#storyAdd img").src = data.avatar_url || "https://i.pravatar.cc/80?img=47";
     closeProfileEditor();
     await loadSocial();
     toast("Profile updated");
@@ -1059,11 +1063,9 @@ async function initialize() {
   if (account) {
     activeUsername = account.username;
     const userRow = document.querySelector(".user-row");
-    userRow.querySelector("img").src = account.avatar_url || "https://i.pravatar.cc/100?img=47";
+    updateAccountAvatarImages(account.avatar_url);
     userRow.querySelector("b").textContent = account.username;
     userRow.querySelector("small").textContent = account.display_name || user.email;
-    document.querySelector("#storyAdd img").src = account.avatar_url || "https://i.pravatar.cc/80?img=47";
-    document.getElementById("profileAvatar").src = account.avatar_url || "https://i.pravatar.cc/120?img=47";
     document.getElementById("profileUsername").textContent = account.username;
     document.getElementById("profileDisplayName").textContent = account.display_name || user.email;
     document.getElementById("profileBio").textContent = account.bio || "";
